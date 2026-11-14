@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Live Photo Wall</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- QR Code Generator Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+  <!-- ================= LIVE WALL VIEW (Default) ================= -->
+  <div id="wall-view" class="view hidden">
+    <header class="header">
+      <div class="header-left">
+        <h1>Live Photo Wall</h1>
+        <span class="live-badge"><span class="dot"></span> LIVE</span>
+      </div>
+      <div class="header-right">
+        <span id="sync-status" class="sync-status">Connecting...</span>
+        <a href="?mode=camera" class="btn btn-primary">Open Camera</a>
+      </div>
+    </header>
+
+    <main class="wall-layout">
+      <!-- QR Code Sidebar -->
+      <aside class="qr-card">
+        <h2>Scan to Post a Photo</h2>
+        <p>Point your phone camera at this QR code to snap &amp; post directly in real time.</p>
+        <div id="qrcode" class="qr-box"></div>
+        <p id="qr-url-text" class="qr-url"></p>
+      </aside>
+
+      <!-- Real-Time Photo Feed -->
+      <section class="feed-section">
+        <div id="empty-state" class="empty-state hidden">
+          No photos yet. Scan the QR code to post the first one!
+        </div>
+        <div id="gallery-grid" class="gallery-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ================= DIRECT CAMERA VIEW (?mode=camera) ================= -->
+  <div id="camera-view" class="view hidden">
+    <header class="cam-header">
+      <h2>Snap &amp; Post</h2>
+      <a href="?" class="btn btn-secondary btn-sm">View Wall</a>
+    </header>
+
+    <!-- Live Camera Stage -->
+    <div id="camera-stage" class="camera-stage">
+      <div class="video-wrapper">
+        <video id="camera-video" autoplay playsinline muted></video>
+        <div id="camera-error" class="camera-error hidden">
+          <p>Could not auto-start browser camera. Use your phone's native camera below:</p>
+        </div>
+      </div>
+
+      <div class="camera-controls">
+        <button id="flip-btn" type="button" class="btn btn-secondary">Flip Camera</button>
+        <button id="snap-btn" type="button" class="btn btn-capture" aria-label="Take Photo"></button>
+        <label class="btn btn-secondary file-label">
+          Native Cam
+          <input id="native-camera-input" type="file" accept="image/*" capture="environment" hidden />
+        </label>
+      </div>
+    </div>
+
+    <!-- Preview & Upload Stage -->
+    <div id="preview-stage" class="preview-stage hidden">
+      <img id="photo-preview" alt="Captured preview" />
+
+      <form id="post-form" class="post-form">
+        <input id="author-input" type="text" placeholder="Your name (optional)" maxlength="40" />
+        <input id="caption-input" type="text" placeholder="Add a caption (optional)" maxlength="140" />
+
+        <div class="preview-actions">
+          <button id="retake-btn" type="button" class="btn btn-secondary">Retake</button>
+          <button id="upload-btn" type="submit" class="btn btn-primary">Post to Wall</button>
+        </div>
+        <p id="upload-status" class="upload-status"></p>
+      </form>
+    </div>
+
+    <!-- Success Stage -->
+    <div id="success-stage" class="success-stage hidden">
+      <div class="success-icon">✓</div>
+      <h3>Posted to the Live Wall!</h3>
+      <p>Your photo is now visible on the website.</p>
+      <div class="preview-actions">
+        <button id="another-btn" type="button" class="btn btn-secondary">Take Another</button>
+        <a href="?" class="btn btn-primary">Go to Live Wall</a>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="capture-canvas" hidden></canvas>
+  <script src="script.js"></script>
+</body>
+</html>
