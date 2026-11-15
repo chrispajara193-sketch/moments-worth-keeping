@@ -1,8 +1,9 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwq-CEALuQWgVd7M98xAJpeChajtgh76J4ODq7sJjIv9Pq0hnUW4oAC9wdAsgdokXlfoA/exec";
-const POLL_INTERVAL_MS = 4000;
+const POLL_INTERVAL_MS = 5000;
 
 const params = new URLSearchParams(window.location.search);
 const isCameraMode = params.get("mode") === "camera";
+const adminKey = params.get("admin") || "";
 
 if (isCameraMode) {
   initCameraMode();
@@ -10,11 +11,10 @@ if (isCameraMode) {
   initWallMode();
 }
 
-/* ==================== LIVE WALL MODE ==================== */
+/* ==================== GALLERY / LOCKED WALL MODE ==================== */
 function initWallMode() {
   document.getElementById("wall-view").classList.remove("hidden");
 
-  // Build QR code pointing directly to ?mode=camera on your deployed domain
   const cameraUrl = `${window.location.origin}${window.location.pathname}?mode=camera`;
   document.getElementById("qr-url-text").textContent = cameraUrl;
 
@@ -30,6 +30,10 @@ function initWallMode() {
   const renderedIds = new Set();
   const gallery = document.getElementById("gallery-grid");
   const emptyState = document.getElementById("empty-state");
+  const lockedBanner = document.getElementById("locked-banner");
+  const unlockDateText = document.getElementById("unlock-date-text");
+  const liveBadge = document.getElementById("live-badge");
+  const adminBadge = document.getElementById("admin-badge");
   const syncStatus = document.getElementById("sync-status");
 
   async function fetchPosts() {
@@ -39,12 +43,43 @@ function initWallMode() {
     }
 
     try {
-      const res = await fetch(`${SCRIPT_URL}?t=${Date.now()}`);
+      const adminQuery = adminKey ? `&admin=${encodeURIComponent(adminKey)}` : "";
+      const res = await fetch(`${SCRIPT_URL}?t=${Date.now()}${adminQuery}`);
       const data = await res.json();
 
-      if (data.status === "success" && Array.isArray(data.posts)) {
-        // API returns newest first; iterate in reverse so newest ends up on top
-        const posts = [...data.posts].reverse();
+      if (data.status !== "success") {
+        throw new Error(data.message || "Error loading gallery");
+      }
+
+      if (data.locked) {
+        // Gallery is locked during the wedding
+        lockedBanner.classList.remove("hidden");
+        gallery.classList.add("hidden");
+        emptyState.classList.add("hidden");
+        liveBadge.classList.add("hidden");
+        adminBadge.classList.add("hidden");
+
+        if (data.unlockDate) {
+          const d = new Date(data.unlockDate);
+          unlockDateText.textContent = !isNaN(d.getTime())
+            ? `Gallery opens on: ${d.toLocaleString()}`
+            : "";
+        }
+        syncStatus.textContent = "Uploads Open";
+      } else {
+        // Gallery is unlocked (after wedding) OR Host Preview (?admin=...)
+        lockedBanner.classList.add("hidden");
+        gallery.classList.remove("hidden");
+
+        if (data.isAdminPreview) {
+          adminBadge.classList.remove("hidden");
+          liveBadge.classList.add("hidden");
+        } else {
+          liveBadge.classList.remove("hidden");
+          adminBadge.classList.add("hidden");
+        }
+
+        const posts = [...(data.posts || [])].reverse();
         posts.forEach((post) => {
           if (!renderedIds.has(post.id)) {
             renderedIds.add(post.id);
@@ -72,7 +107,7 @@ function createPhotoCard(post) {
 
   const img = document.createElement("img");
   img.src = post.imageUrl;
-  img.alt = post.caption || "Guest photo";
+  img.alt = post.caption || "Wedding photo";
   img.loading = "lazy";
   img.referrerPolicy = "no-referrer";
 
@@ -128,9 +163,11 @@ function initCameraMode() {
   const uploadBtn = document.getElementById("upload-btn");
   const uploadStatus = document.getElementById("upload-status");
   const anotherBtn = document.getElementById("another-btn");
+  const successMessage = document.getElementById("success-message");
+  const successGalleryLink = document.getElementById("success-gallery-link");
 
   let stream = null;
-  let facingMode = "environment"; // Rear camera by default
+  let facingMode = "environment";
   let capturedBase64 = "";
 
   async function startCamera() {
@@ -202,7 +239,6 @@ function initCameraMode() {
     showPreview(dataUrl);
   });
 
-  // Fallback for native mobile camera app
   nativeInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -238,7 +274,7 @@ function initCameraMode() {
     if (!capturedBase64) return;
 
     uploadBtn.disabled = true;
-    uploadStatus.textContent = "Uploading photo...";
+    uploadStatus.textContent = "Sending photo...";
 
     const payload = {
       imageBase64: capturedBase64,
@@ -247,7 +283,6 @@ function initCameraMode() {
     };
 
     try {
-      // text/plain prevents CORS preflight failure on Google Apps Script
       const res = await fetch(SCRIPT_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -257,6 +292,15 @@ function initCameraMode() {
       const result = await res.json();
 
       if (result.status === "success") {
+        if (result.locked) {
+          successMessage.textContent =
+            "Your photo has been safely saved for the couple. The gallery will be revealed after the wedding day!";
+          successGalleryLink.classList.add("hidden");
+        } else {
+          successMessage.textContent = "Your photo is now on the wedding gallery!";
+          successGalleryLink.classList.remove("hidden");
+        }
+
         previewStage.classList.add("hidden");
         successStage.classList.remove("hidden");
       } else {
