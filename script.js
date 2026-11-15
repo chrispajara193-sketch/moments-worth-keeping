@@ -22,12 +22,15 @@ function initWallMode() {
     text: cameraUrl,
     width: 180,
     height: 180,
-    colorDark: "#0f172a",
-    colorLight: "#ffffff",
+    colorDark: "#4b060d",
+    colorLight: "#faf2e8",
     correctLevel: QRCode.CorrectLevel.M
   });
 
   const renderedIds = new Set();
+  const wallLayout = document.getElementById("wall-layout");
+  const qrCard = document.getElementById("qr-card");
+  const headerCameraBtn = document.getElementById("header-camera-btn");
   const gallery = document.getElementById("gallery-grid");
   const emptyState = document.getElementById("empty-state");
   const lockedBanner = document.getElementById("locked-banner");
@@ -37,11 +40,6 @@ function initWallMode() {
   const syncStatus = document.getElementById("sync-status");
 
   async function fetchPosts() {
-    if (SCRIPT_URL.includes("PASTE_YOUR")) {
-      syncStatus.textContent = "Set SCRIPT_URL in script.js";
-      return;
-    }
-
     try {
       const adminQuery = adminKey ? `&admin=${encodeURIComponent(adminKey)}` : "";
       const res = await fetch(`${SCRIPT_URL}?t=${Date.now()}${adminQuery}`);
@@ -52,31 +50,41 @@ function initWallMode() {
       }
 
       if (data.locked) {
-        // Gallery is locked during the wedding
+        // Guest locked view
         lockedBanner.classList.remove("hidden");
         gallery.classList.add("hidden");
         emptyState.classList.add("hidden");
         liveBadge.classList.add("hidden");
         adminBadge.classList.add("hidden");
+        qrCard.classList.remove("hidden");
+        headerCameraBtn.classList.remove("hidden");
+        wallLayout.classList.remove("host-only");
 
         if (data.unlockDate) {
           const d = new Date(data.unlockDate);
           unlockDateText.textContent = !isNaN(d.getTime())
-            ? `Gallery opens on: ${d.toLocaleString()}`
+            ? `Gallery opens on ${d.toLocaleString()}`
             : "";
         }
         syncStatus.textContent = "Uploads Open";
       } else {
-        // Gallery is unlocked (after wedding) OR Host Preview (?admin=...)
         lockedBanner.classList.add("hidden");
         gallery.classList.remove("hidden");
 
         if (data.isAdminPreview) {
+          // Host preview: hide QR card & Snap a Photo button, show photos full-width
           adminBadge.classList.remove("hidden");
           liveBadge.classList.add("hidden");
+          qrCard.classList.add("hidden");
+          headerCameraBtn.classList.add("hidden");
+          wallLayout.classList.add("host-only");
         } else {
+          // Unlocked public gallery after the wedding
           liveBadge.classList.remove("hidden");
           adminBadge.classList.add("hidden");
+          qrCard.classList.remove("hidden");
+          headerCameraBtn.classList.remove("hidden");
+          wallLayout.classList.remove("host-only");
         }
 
         const posts = [...(data.posts || [])].reverse();
@@ -127,7 +135,7 @@ function createPhotoCard(post) {
   if (post.caption) {
     const caption = document.createElement("div");
     caption.className = "photo-caption";
-    caption.textContent = post.caption;
+    caption.textContent = `"${post.caption}"`;
     meta.appendChild(caption);
   }
 
