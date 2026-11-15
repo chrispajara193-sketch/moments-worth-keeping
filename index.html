@@ -28,6 +28,7 @@
       </div>
       <div class="header-right">
         <span id="sync-status" class="sync-status">Checking gallery...</span>
+        <button id="print-qr-btn" type="button" class="btn btn-secondary hidden">Print QR Code</button>
         <a id="header-camera-btn" href="?mode=camera" class="btn btn-primary">Snap a Photo</a>
       </div>
     </header>
@@ -125,6 +126,21 @@
     </div>
   </div>
 
+  <section id="print-sheet" class="print-only" aria-hidden="true">
+    <div class="print-card">
+      <div class="print-seal">EA</div>
+      <p class="print-eyebrow">Emman &amp; Ashley</p>
+      <h2 class="print-title">Share Your Candid Moments</h2>
+      <div class="print-divider"></div>
+      <p class="print-instructions">
+        Point your phone camera at the QR code below to snap and send your photos directly to the couple.
+      </p>
+      <div id="print-qrcode" class="print-qr-box"></div>
+      <p id="print-qr-url" class="print-url"></p>
+      <p class="print-footer">All photos will be revealed after the wedding day.</p>
+    </div>
+  </section>
+  
   <canvas id="capture-canvas" hidden></canvas>
   <script src="script.js"></script>
 </body>
