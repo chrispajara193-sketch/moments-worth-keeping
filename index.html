@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moments Worth Keeping — Wedding Gallery</title>
+  <title>Emman &amp; Ashley — Moments Worth Keeping</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -13,20 +19,25 @@
   <div id="wall-view" class="view hidden">
     <header class="header">
       <div class="header-left">
-        <h1>Moments Worth Keeping</h1>
-        <span id="live-badge" class="live-badge hidden"><span class="dot"></span> GALLERY OPEN</span>
-        <span id="admin-badge" class="admin-badge hidden">HOST PREVIEW</span>
+        <div>
+          <p class="eyebrow">Emman &amp; Ashley</p>
+          <h1>Moments Worth Keeping</h1>
+        </div>
+        <span id="live-badge" class="live-badge hidden"><span class="dot"></span> Gallery Open</span>
+        <span id="admin-badge" class="admin-badge hidden">Host Preview</span>
       </div>
       <div class="header-right">
         <span id="sync-status" class="sync-status">Checking gallery...</span>
-        <a href="?mode=camera" class="btn btn-primary">Snap a Photo</a>
+        <a id="header-camera-btn" href="?mode=camera" class="btn btn-primary">Snap a Photo</a>
       </div>
     </header>
 
-    <main class="wall-layout">
-      <!-- QR Code Sidebar -->
-      <aside class="qr-card">
+    <main id="wall-layout" class="wall-layout">
+      <!-- QR Code Sidebar (Hidden automatically in Host Preview) -->
+      <aside id="qr-card" class="qr-card glass-card">
+        <p class="card-tag">Capture &amp; Share</p>
         <h2>Share Your Candid Moments</h2>
+        <div class="divider"></div>
         <p>Scan this QR code with your phone camera to snap and send photos directly to the couple.</p>
         <div id="qrcode" class="qr-box"></div>
         <p id="qr-url-text" class="qr-url"></p>
@@ -35,11 +46,12 @@
       <!-- Locked Notice OR Unlocked Gallery -->
       <section class="feed-section">
         <!-- Shown during the wedding while locked -->
-        <div id="locked-banner" class="locked-banner hidden">
-          <div class="lock-icon">🔒</div>
+        <div id="locked-banner" class="locked-banner glass-card hidden">
+          <div class="monogram-seal">EA</div>
           <h2>Gallery Saved for After the Wedding</h2>
+          <div class="divider"></div>
           <p>
-            To keep our special moments a surprise before anything hits social media,
+            To keep our special moments intimate before anything reaches social media,
             all guest photos are safely tucked away for now.
           </p>
           <p id="unlock-date-text" class="unlock-date-text"></p>
@@ -47,8 +59,8 @@
         </div>
 
         <!-- Shown after the wedding (or in Host Preview) -->
-        <div id="empty-state" class="empty-state hidden">
-          No photos yet. Scan the QR code to capture the first moment!
+        <div id="empty-state" class="empty-state glass-card hidden">
+          No photos yet. Guest captures will appear here as they are sent!
         </div>
         <div id="gallery-grid" class="gallery-grid hidden"></div>
       </section>
@@ -58,7 +70,10 @@
   <!-- ================= DIRECT CAMERA VIEW (?mode=camera) ================= -->
   <div id="camera-view" class="view hidden">
     <header class="cam-header">
-      <h2>Moments Worth Keeping</h2>
+      <div>
+        <p class="eyebrow">Emman &amp; Ashley</p>
+        <h2>Moments Worth Keeping</h2>
+      </div>
     </header>
 
     <!-- Live Camera Stage -->
@@ -86,7 +101,7 @@
 
       <form id="post-form" class="post-form">
         <input id="author-input" type="text" placeholder="Your name (optional)" maxlength="40" />
-        <input id="caption-input" type="text" placeholder="Leave a note for the couple (optional)" maxlength="140" />
+        <input id="caption-input" type="text" placeholder="Leave a warm note for the couple (optional)" maxlength="140" />
 
         <div class="preview-actions">
           <button id="retake-btn" type="button" class="btn btn-secondary">Retake</button>
@@ -97,7 +112,7 @@
     </div>
 
     <!-- Success Stage -->
-    <div id="success-stage" class="success-stage hidden">
+    <div id="success-stage" class="success-stage glass-card hidden">
       <div class="success-icon">✓</div>
       <h3>Thank You for Sharing!</h3>
       <p id="success-message">
