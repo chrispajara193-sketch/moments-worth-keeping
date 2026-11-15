@@ -523,3 +523,119 @@ h1, h2, h3, .monogram-seal, .photo-author {
     position: static;
   }
 }
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body::before,
+  body::after,
+  #wall-view,
+  #camera-view {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #4b060d !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  #print-sheet {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1.5rem;
+  }
+
+  .print-card {
+    width: 100%;
+    max-width: 460px;
+    background: #faf2e8;
+    border: 3px double #4b060d;
+    outline: 1px solid #4b060d;
+    outline-offset: -10px;
+    border-radius: 1rem;
+    padding: 2.75rem 2.25rem;
+    text-align: center;
+    color: #4b060d;
+  }
+
+  .print-seal {
+    width: 68px;
+    height: 88px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    border: 2px double #4b060d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 1.85rem;
+    font-weight: 600;
+    color: #4b060d;
+    background: #ffffff;
+  }
+
+  .print-eyebrow {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color: #7c2d35;
+    margin-bottom: 0.35rem;
+  }
+
+  .print-title {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 2.1rem;
+    font-weight: 600;
+    color: #4b060d;
+    line-height: 1.15;
+  }
+
+  .print-divider {
+    width: 64px;
+    height: 1px;
+    background: #4b060d;
+    margin: 0.9rem auto;
+    opacity: 0.45;
+  }
+
+  .print-instructions {
+    font-size: 0.98rem;
+    line-height: 1.55;
+    color: #5c1920;
+    margin-bottom: 1.4rem;
+  }
+
+  .print-qr-box {
+    display: inline-block;
+    background: #ffffff;
+    padding: 1rem;
+    border: 1px solid rgba(75, 6, 13, 0.25);
+    border-radius: 0.75rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .print-url {
+    font-size: 0.72rem;
+    color: #7c2d35;
+    word-break: break-all;
+    margin-bottom: 1rem;
+  }
+
+  .print-footer {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: #4b060d;
+  }
+}
