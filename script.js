@@ -17,7 +17,8 @@ function initWallMode() {
 
   const cameraUrl = `${window.location.origin}${window.location.pathname}?mode=camera`;
   document.getElementById("qr-url-text").textContent = cameraUrl;
-  document.getElementById("print-qr-url").textContent = cameraUrl;
+  document.getElementById("print-qr-url-1").textContent = cameraUrl;
+  document.getElementById("print-qr-url-2").textContent = cameraUrl;
 
   new QRCode(document.getElementById("qrcode"), {
     text: cameraUrl,
@@ -28,14 +29,15 @@ function initWallMode() {
     correctLevel: QRCode.CorrectLevel.M
   });
 
-  // High-contrast QR code for the printable table sign
-  new QRCode(document.getElementById("print-qrcode"), {
-    text: cameraUrl,
-    width: 240,
-    height: 240,
-    colorDark: "#3d0409",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.M
+  ["print-qrcode-1", "print-qrcode-2"].forEach((id) => {
+    new QRCode(document.getElementById(id), {
+      text: cameraUrl,
+      width: 185,
+      height: 185,
+      colorDark: "#4b060d",
+      colorLight: "#faf2e8",
+      correctLevel: QRCode.CorrectLevel.M
+    });
   });
 
   const renderedIds = new Set();
