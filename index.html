@@ -3,41 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QR Live Photo Wall</title>
+  <title>Moments Worth Keeping — Wedding Gallery</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- QR Code Generator Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
-  <!-- ================= LIVE WALL VIEW (Default) ================= -->
+  <!-- ================= MAIN / GALLERY VIEW ================= -->
   <div id="wall-view" class="view hidden">
     <header class="header">
       <div class="header-left">
-        <h1>Live Photo Wall</h1>
-        <span class="live-badge"><span class="dot"></span> LIVE</span>
+        <h1>Moments Worth Keeping</h1>
+        <span id="live-badge" class="live-badge hidden"><span class="dot"></span> GALLERY OPEN</span>
+        <span id="admin-badge" class="admin-badge hidden">HOST PREVIEW</span>
       </div>
       <div class="header-right">
-        <span id="sync-status" class="sync-status">Connecting...</span>
-        <a href="?mode=camera" class="btn btn-primary">Open Camera</a>
+        <span id="sync-status" class="sync-status">Checking gallery...</span>
+        <a href="?mode=camera" class="btn btn-primary">Snap a Photo</a>
       </div>
     </header>
 
     <main class="wall-layout">
       <!-- QR Code Sidebar -->
       <aside class="qr-card">
-        <h2>Scan to Post a Photo</h2>
-        <p>Point your phone camera at this QR code to snap &amp; post directly in real time.</p>
+        <h2>Share Your Candid Moments</h2>
+        <p>Scan this QR code with your phone camera to snap and send photos directly to the couple.</p>
         <div id="qrcode" class="qr-box"></div>
         <p id="qr-url-text" class="qr-url"></p>
       </aside>
 
-      <!-- Real-Time Photo Feed -->
+      <!-- Locked Notice OR Unlocked Gallery -->
       <section class="feed-section">
-        <div id="empty-state" class="empty-state hidden">
-          No photos yet. Scan the QR code to post the first one!
+        <!-- Shown during the wedding while locked -->
+        <div id="locked-banner" class="locked-banner hidden">
+          <div class="lock-icon">🔒</div>
+          <h2>Gallery Saved for After the Wedding</h2>
+          <p>
+            To keep our special moments a surprise before anything hits social media,
+            all guest photos are safely tucked away for now.
+          </p>
+          <p id="unlock-date-text" class="unlock-date-text"></p>
+          <a href="?mode=camera" class="btn btn-primary">Take &amp; Upload a Photo</a>
         </div>
-        <div id="gallery-grid" class="gallery-grid"></div>
+
+        <!-- Shown after the wedding (or in Host Preview) -->
+        <div id="empty-state" class="empty-state hidden">
+          No photos yet. Scan the QR code to capture the first moment!
+        </div>
+        <div id="gallery-grid" class="gallery-grid hidden"></div>
       </section>
     </main>
   </div>
@@ -45,8 +58,7 @@
   <!-- ================= DIRECT CAMERA VIEW (?mode=camera) ================= -->
   <div id="camera-view" class="view hidden">
     <header class="cam-header">
-      <h2>Snap &amp; Post</h2>
-      <a href="?" class="btn btn-secondary btn-sm">View Wall</a>
+      <h2>Moments Worth Keeping</h2>
     </header>
 
     <!-- Live Camera Stage -->
@@ -74,11 +86,11 @@
 
       <form id="post-form" class="post-form">
         <input id="author-input" type="text" placeholder="Your name (optional)" maxlength="40" />
-        <input id="caption-input" type="text" placeholder="Add a caption (optional)" maxlength="140" />
+        <input id="caption-input" type="text" placeholder="Leave a note for the couple (optional)" maxlength="140" />
 
         <div class="preview-actions">
           <button id="retake-btn" type="button" class="btn btn-secondary">Retake</button>
-          <button id="upload-btn" type="submit" class="btn btn-primary">Post to Wall</button>
+          <button id="upload-btn" type="submit" class="btn btn-primary">Send to Couple</button>
         </div>
         <p id="upload-status" class="upload-status"></p>
       </form>
@@ -87,11 +99,13 @@
     <!-- Success Stage -->
     <div id="success-stage" class="success-stage hidden">
       <div class="success-icon">✓</div>
-      <h3>Posted to the Live Wall!</h3>
-      <p>Your photo is now visible on the website.</p>
+      <h3>Thank You for Sharing!</h3>
+      <p id="success-message">
+        Your photo has been safely saved for the couple. The full gallery will be revealed after the wedding day!
+      </p>
       <div class="preview-actions">
-        <button id="another-btn" type="button" class="btn btn-secondary">Take Another</button>
-        <a href="?" class="btn btn-primary">Go to Live Wall</a>
+        <button id="another-btn" type="button" class="btn btn-primary">Take Another Photo</button>
+        <a id="success-gallery-link" href="?" class="btn btn-secondary hidden">View Gallery</a>
       </div>
     </div>
   </div>
