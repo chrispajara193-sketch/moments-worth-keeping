@@ -528,10 +528,15 @@ h1, h2, h3, .monogram-seal, .photo-author {
   display: none;
 }
 
+@page {
+  size: landscape;
+  margin: 0.35in;
+}
+
 @media print {
   * {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   body::before,
@@ -543,7 +548,6 @@ h1, h2, h3, .monogram-seal, .photo-author {
 
   body {
     background: #ffffff !important;
-    color: #4b060d !important;
     margin: 0;
     padding: 0;
   }
@@ -552,90 +556,113 @@ h1, h2, h3, .monogram-seal, .photo-author {
     display: flex !important;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    padding: 1.5rem;
+    width: 100%;
+    min-height: 95vh;
+  }
+
+  .print-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55in;
+    width: 100%;
+    max-width: 10in;
+    position: relative;
+  }
+
+  /* Faint center guide line for cutting the 2 cards apart */
+  .print-grid::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    border-left: 1px dashed rgba(75, 6, 13, 0.3);
   }
 
   .print-card {
-    width: 100%;
-    max-width: 460px;
-    background: #faf2e8;
-    border: 3px double #4b060d;
-    outline: 1px solid #4b060d;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    background:
+      linear-gradient(rgba(64, 5, 11, 0.84), rgba(42, 3, 7, 0.9)),
+      url("wedding-bg.jpg") center center / cover no-repeat;
+    background-color: #4b060d;
+    border: 2px solid #faf2e8;
+    outline: 1px solid rgba(229, 195, 132, 0.65);
     outline-offset: -10px;
     border-radius: 1rem;
-    padding: 2.75rem 2.25rem;
+    padding: 1.65rem 1.5rem;
     text-align: center;
-    color: #4b060d;
+    color: #faf2e8;
   }
 
   .print-seal {
-    width: 68px;
-    height: 88px;
-    margin: 0 auto 1rem;
+    width: 58px;
+    height: 76px;
+    margin: 0 auto 0.85rem;
     border-radius: 50%;
+    background: #faf2e8;
+    color: #4b060d;
     border: 2px double #4b060d;
+    outline: 3px solid #faf2e8;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: "Cormorant Garamond", Georgia, serif;
-    font-size: 1.85rem;
+    font-size: 1.55rem;
     font-weight: 600;
-    color: #4b060d;
-    background: #ffffff;
   }
 
   .print-eyebrow {
-    font-size: 0.78rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.24em;
-    color: #7c2d35;
-    margin-bottom: 0.35rem;
+    letter-spacing: 0.22em;
+    color: #e5c384;
+    margin-bottom: 0.25rem;
   }
 
   .print-title {
     font-family: "Cormorant Garamond", Georgia, serif;
-    font-size: 2.1rem;
+    font-size: 1.75rem;
     font-weight: 600;
-    color: #4b060d;
+    color: #faf2e8;
     line-height: 1.15;
   }
 
   .print-divider {
-    width: 64px;
+    width: 56px;
     height: 1px;
-    background: #4b060d;
-    margin: 0.9rem auto;
-    opacity: 0.45;
+    background: #e5c384;
+    margin: 0.65rem auto;
+    opacity: 0.75;
   }
 
   .print-instructions {
-    font-size: 0.98rem;
-    line-height: 1.55;
-    color: #5c1920;
-    margin-bottom: 1.4rem;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: #f3e5dc;
+    margin-bottom: 1rem;
   }
 
   .print-qr-box {
     display: inline-block;
-    background: #ffffff;
-    padding: 1rem;
-    border: 1px solid rgba(75, 6, 13, 0.25);
-    border-radius: 0.75rem;
-    margin-bottom: 0.85rem;
+    background: #faf2e8;
+    padding: 0.8rem;
+    border: 2px solid #e5c384;
+    border-radius: 0.85rem;
+    margin-bottom: 0.65rem;
   }
 
   .print-url {
-    font-size: 0.72rem;
-    color: #7c2d35;
+    font-size: 0.68rem;
+    color: #d8bbb5;
     word-break: break-all;
-    margin-bottom: 1rem;
+    margin-bottom: 0.65rem;
   }
 
   .print-footer {
     font-family: "Cormorant Garamond", Georgia, serif;
     font-style: italic;
-    font-size: 1.05rem;
-    color: #4b060d;
+    font-size: 0.98rem;
+    color: #e5c384;
   }
 }
