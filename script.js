@@ -17,6 +17,7 @@ function initWallMode() {
 
   const cameraUrl = `${window.location.origin}${window.location.pathname}?mode=camera`;
   document.getElementById("qr-url-text").textContent = cameraUrl;
+  document.getElementById("print-qr-url").textContent = cameraUrl;
 
   new QRCode(document.getElementById("qrcode"), {
     text: cameraUrl,
@@ -27,10 +28,21 @@ function initWallMode() {
     correctLevel: QRCode.CorrectLevel.M
   });
 
+  // High-contrast QR code for the printable table sign
+  new QRCode(document.getElementById("print-qrcode"), {
+    text: cameraUrl,
+    width: 240,
+    height: 240,
+    colorDark: "#3d0409",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
   const renderedIds = new Set();
   const wallLayout = document.getElementById("wall-layout");
   const qrCard = document.getElementById("qr-card");
   const headerCameraBtn = document.getElementById("header-camera-btn");
+  const printQrBtn = document.getElementById("print-qr-btn");
   const gallery = document.getElementById("gallery-grid");
   const emptyState = document.getElementById("empty-state");
   const lockedBanner = document.getElementById("locked-banner");
@@ -38,6 +50,10 @@ function initWallMode() {
   const liveBadge = document.getElementById("live-badge");
   const adminBadge = document.getElementById("admin-badge");
   const syncStatus = document.getElementById("sync-status");
+
+  printQrBtn.addEventListener("click", () => {
+    window.print();
+  });
 
   async function fetchPosts() {
     try {
@@ -50,12 +66,12 @@ function initWallMode() {
       }
 
       if (data.locked) {
-        // Guest locked view
         lockedBanner.classList.remove("hidden");
         gallery.classList.add("hidden");
         emptyState.classList.add("hidden");
         liveBadge.classList.add("hidden");
         adminBadge.classList.add("hidden");
+        printQrBtn.classList.add("hidden");
         qrCard.classList.remove("hidden");
         headerCameraBtn.classList.remove("hidden");
         wallLayout.classList.remove("host-only");
@@ -72,16 +88,16 @@ function initWallMode() {
         gallery.classList.remove("hidden");
 
         if (data.isAdminPreview) {
-          // Host preview: hide QR card & Snap a Photo button, show photos full-width
           adminBadge.classList.remove("hidden");
+          printQrBtn.classList.remove("hidden");
           liveBadge.classList.add("hidden");
           qrCard.classList.add("hidden");
           headerCameraBtn.classList.add("hidden");
           wallLayout.classList.add("host-only");
         } else {
-          // Unlocked public gallery after the wedding
           liveBadge.classList.remove("hidden");
           adminBadge.classList.add("hidden");
+          printQrBtn.classList.add("hidden");
           qrCard.classList.remove("hidden");
           headerCameraBtn.classList.remove("hidden");
           wallLayout.classList.remove("host-only");
